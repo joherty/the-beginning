@@ -1,0 +1,9 @@
+variable "ssh_key" {
+  default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWc9IzSb5KOMfgeQNSjVgJCzQwLits8tIg9L+TNKtRKBdgCazAZ75QcvF49ZDkHVBWbgD/qAsu58phdJY9HYoOvXczuEMduX0auIKh4RTS2YCD5mBlCyiVr1aNFheEtNtqYUcB/xcfid4jqAz9yERhI/2HXSv8L4I02osk9GKBCfqzn+ccDRRQq9Y/oIBNCuwDC8Xifu4GmZwA5+t/xOXn5PDMpYC1Ofrjx1aczFpN9HYgALvOmTWD0rmd5v1+OPtZY7OrKOVbu+gGvFklqJYJ6yeE5AJt2OqSlUmA8kXFgt5GU24xdhnDx5f1Tlt2KOIS4WRxfo37zecLX3zOGpfq8wcIMO8I/yOIYgEnnnxvrj0xxi8IfpBMbIKXT2toB2aLg2UYcVrhgoWHkBfd1L8ylEXO08wo8gJFZB0wmnfdmRliB9b6lqEj/CSM0ber2KA91NlO3b9B4/25ujd39CkTEnToL0KIdFUOcsyvAvvvOK9M5/0poMKV4aJbt25vPZ8= john@TheBeast"
+}
+variable "proxmox_host" {
+    default = "alpha"
+}
+variable "template_name" {
+    default = "ubuntu-2204-template"
+}
