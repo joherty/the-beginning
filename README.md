@@ -1,5 +1,15 @@
 # the-beginning
 
+This is the complete **Infastructure as Code** reference for the house services.
+
+## Terraform
+
+This section details the initial terraform configuration with **ProxMox**
+
+## Ansible
+
+
+
 ssh-keygen
 
 sudo vim /etc/netplan/01-network-configuration.yaml
@@ -31,3 +41,6 @@ ssh-copy-id -i ~/.ssh/ansible.pub 10.0.0.21
 ssh-copy-id -i ~/.ssh/ansible.pub 10.0.0.22
 ssh-copy-id -i ~/.ssh/ansible.pub 10.0.0.23
 
+ansible all --key-file ~/.ssh/ansible -i inventory -m ping
+    after creating and populating ansible.cfg, the command can shorten to:
+ansible all -m ping
