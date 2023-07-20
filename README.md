@@ -1,12 +1,12 @@
-# the-beginning
+# In the beginning
 
-This is the complete **Infastructure as Code** reference for the house services.
+This is the complete **Infastructure as Code** reference for the Oak Tree Cottage services.
 
-## Terraform
+### Terraform
 
 This section details the initial terraform configuration with **ProxMox**
 
-## Ansible
+### Ansible
 
 
 
