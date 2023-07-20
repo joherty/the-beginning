@@ -16,3 +16,18 @@ network:
       routes:
         - to: default
           via: 10.0.0.254
+
+## ssh commands
+`ssh-keygen`
+cat ~/.ssh/id_rsa.pub | ssh john@10.0.0.20 'cat >> .ssh/authorized_keys'
+
+## Create a secure key for ansible using ed35519
+ssh-keygen -t ed25519 -C "ansible"
+##
+save as /home/john/.ssh/ansible
+
+## copy to servers
+ssh-copy-id -i ~/.ssh/ansible.pub 10.0.0.21
+ssh-copy-id -i ~/.ssh/ansible.pub 10.0.0.22
+ssh-copy-id -i ~/.ssh/ansible.pub 10.0.0.23
+
