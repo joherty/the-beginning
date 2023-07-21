@@ -8,18 +8,18 @@
     apt:
       update_cache: yes
       cache_valid_time: 3600
-    when: ansible_distribution == "Ubuntu"
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
   - name: Update all Ubuntu packages to their latest version
     ansible.builtin.apt:
       name: "*"
       state: latest
-    when: ansible_distribution == "Ubuntu"
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
   - name: Upgrade the Ubuntu servers OS (apt-get dist-upgrade)
     ansible.builtin.apt:
       upgrade: dist
-    when: ansible_distribution == "Ubuntu"
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
     
   - name: update all Rocky repository indexes
