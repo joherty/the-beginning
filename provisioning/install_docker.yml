@@ -6,6 +6,7 @@
     default_container_name: docker
     default_container_image: ubuntu
     default_container_command: sleep 1d
+    docker_compose_version: "v2.20.2"
 
   tasks:
     - name: Install aptitude
@@ -46,3 +47,34 @@
     - name: Install Docker Module for Python
       pip:
         name: docker
+
+#    - name: Add user to docker group
+#      user:
+#        name: "{{ansible_user}}"
+#        group: docker
+
+    - name: Download docker-compose {{ docker_compose_version }}
+      get_url:
+        url : https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+        dest: ~/docker-compose
+        mode: '+x'
+
+    - name: Check docker-compose exists
+      stat: path=~/docker-compose
+      register: docker_compose
+
+    - name: Move docker-compose to /usr/local/bin/docker-compose
+      command: mv ~/docker-compose /usr/local/bin/docker-compose
+      when: docker_compose.stat.exists
+
+    - name: copy docker-compose.yml to the server(s)
+      ansible.builtin.copy:
+        src: /home/john/code/the-beginning/provisioning/docker-compose.yml
+        dest: /opt/docker-compose.yml
+        owner: john
+        group: john
+        mode: u=rw,g=r,o=r
+
+    - name: move to /opt and run docker-compose.yml
+      ansible.builtin.shell: cd /opt && docker-compose -f docker-compose.yml up -d --remove-orphans
+      
