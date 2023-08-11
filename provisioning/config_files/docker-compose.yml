@@ -1,0 +1,52 @@
+services:
+#################### portainer
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    environment:
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - "9000:9000"
+    volumes:
+      - /opt/appdata/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+
+#################### watchtower
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --schedule "0 0 9 * * SUN" --cleanup
+    environment:
+      - NETWORK_ACCESS=internal
+    restart:
+      always 
+
+################### heimdall
+  heimdall:
+    image: ghcr.io/linuxserver/heimdall
+    container_name: heimdall
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    ports:
+      - "443:443"
+    volumes:
+      - /opt/appdata/heimdall:/config
+    restart:
+      always
+
+#################### mqtt
+  mosquitto:
+    image: eclipse-mosquitto
+    network_mode: host
+    volumes:
+      - /opt/appdata/mosquitto/conf:/mosquitto/conf
+      - /opt/appdata/mosquitto:/mosquitto/data
+      - /opt/appdata/mosquitto:/mosquitto/log
+    restart:
+      always 
