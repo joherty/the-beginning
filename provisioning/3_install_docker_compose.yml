@@ -18,7 +18,7 @@
 
     - name: copy docker-compose.yml to the server(s)
       ansible.builtin.copy:
-        src: /home/john/code/the-beginning/provisioning/docker-compose.yml
+        src: /home/john/code/the-beginning/provisioning/config_files/docker-compose.yml
         dest: /opt/docker-compose.yml
         owner: john
         group: john

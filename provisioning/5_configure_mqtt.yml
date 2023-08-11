@@ -1,0 +1,45 @@
+---
+- hosts: 10.0.0.21
+  become: true
+  tasks:
+    - name: copy docker-compose.yml to the server(s)
+      ansible.builtin.copy:
+        src: /home/john/code/the-beginning/provisioning/config_files/docker-compose.yml
+        dest: /opt/docker-compose.yml
+        owner: john
+        group: john
+        mode: u=rw,g=r,o=r
+
+#    - name: stop the mqtt container
+#      ansible.builtin.shell: docker stop mqtt
+
+    - name: Sleep for 5 seconds and continue with play
+      ansible.builtin.wait_for:
+        timeout: 5
+      delegate_to: localhost
+
+    - name: create directory /opt/appdata/mosquitto/config
+      file:
+        path: /opt/appdata/mosquitto/config
+        state: directory
+
+
+    - name: copy mosquitto.conf to the server(s)
+      ansible.builtin.copy:
+        src: /home/john/code/the-beginning/provisioning/config_files/mosquitto.conf
+        dest: /opt/appdata/mosquitto/config/mosquitto.conf
+        owner: john
+        group: john
+        mode: u=rw,g=r,o=r
+
+    - name: copy mosquitto.passwd to the server(s)
+      ansible.builtin.copy:
+        src: /home/john/code/the-beginning/provisioning/config_files/mosquitto.passwd
+        dest: /opt/appdata/mosquitto/config/mosquitto.passwd
+        owner: john
+        group: john
+        mode: u=rw,g=r,o=r             
+  
+    - name: move to /opt and run docker-compose.yml
+      ansible.builtin.shell: cd /opt && docker-compose -f docker-compose.yml up -d --remove-orphans   
+

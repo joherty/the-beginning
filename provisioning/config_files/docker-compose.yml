@@ -42,11 +42,22 @@ services:
 
 #################### mqtt
   mosquitto:
+    container_name: mqtt
     image: eclipse-mosquitto
-    network_mode: host
+    ports:
+      - 1883:1883
+      - 8883:8883
+      - 9001:9001
     volumes:
-      - /opt/appdata/mosquitto/conf:/mosquitto/conf
-      - /opt/appdata/mosquitto:/mosquitto/data
-      - /opt/appdata/mosquitto:/mosquitto/log
+      - /opt/appdata/mosquitto/config:/mosquitto/config
+      - /opt/appdata/mosquitto/data:/mosquitto/data
+      - /opt/appdata/mosquitto/log:/mosquitto/log
     restart:
-      always 
+      always
+    networks:
+      - mosquitto
+
+networks:
+    mosquitto:
+        name: mosquitto
+        driver: bridge
