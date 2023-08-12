@@ -116,4 +116,15 @@
         mode: u=rw,g=r,o=r             
   
     - name: move to /opt and run docker-compose.yml
-      ansible.builtin.shell: cd /opt && docker-compose -f docker-compose.yml up -d --remove-orphans   
+      ansible.builtin.shell: cd /opt && docker-compose -f docker-compose.yml up -d --remove-orphans
+
+    - name: Set node-red folder ownership to john
+      ansible.builtin.file:
+        path: /opt/appdata/node_red
+        state: directory
+        recurse: yes
+        owner: john
+        group: john
+
+    - name: start the node-red container
+      ansible.builtin.shell: docker start node-red

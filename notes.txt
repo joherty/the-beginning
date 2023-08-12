@@ -28,3 +28,4 @@ network:
         - to: default
           via: 10.0.0.254
 
+https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-linux-x86_64

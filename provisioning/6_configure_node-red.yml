@@ -1,0 +1,11 @@
+---
+- hosts: 10.0.0.21
+  become: true
+  tasks:
+    - name: Set node-red folder ownership to john
+      ansible.builtin.file:
+        path: /opt/appdata/node_red
+        state: directory
+        recurse: yes
+        owner: john
+        group: john

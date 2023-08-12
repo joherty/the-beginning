@@ -57,7 +57,25 @@ services:
     networks:
       - mosquitto
 
+##################### node-red
+  node-red:
+    image: nodered/node-red:latest
+    container_name: node-red
+    environment:
+      - TZ=Europe/Amsterdam
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - "1880:1880"
+    networks:
+      - node-red-net
+    volumes:
+      - /opt/appdata/node_red/data:/data      
+
 networks:
     mosquitto:
         name: mosquitto
         driver: bridge
+    node-red-net:
+        name: node-red-net
+        driver: bridge        
