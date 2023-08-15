@@ -1,3 +1,4 @@
+version: "3.9"
 services:
 #################### portainer
   portainer:
@@ -9,7 +10,7 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - /opt/appdata/portainer:/data
+      - $docker_dir/appdata/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
 
@@ -32,11 +33,11 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/London
+      - TZ=Europe/Dublin
     ports:
       - "443:443"
     volumes:
-      - /opt/appdata/heimdall:/config
+      - $docker_dir/appdata/heimdall:/config
     restart:
       always
 
@@ -49,9 +50,9 @@ services:
       - 8883:8883
       - 9001:9001
     volumes:
-      - /opt/appdata/mosquitto/config:/mosquitto/config
-      - /opt/appdata/mosquitto/data:/mosquitto/data
-      - /opt/appdata/mosquitto/log:/mosquitto/log
+      - $docker_dir/appdata/mosquitto/config:/mosquitto/config
+      - $docker_dir/appdata/mosquitto/data:/mosquitto/data
+      - $docker_dir/appdata/mosquitto/log:/mosquitto/log
     restart:
       always
     networks:
@@ -62,7 +63,7 @@ services:
     image: nodered/node-red:latest
     container_name: node-red
     environment:
-      - TZ=Europe/Amsterdam
+      - TZ=Europe/Dublin
       - PUID=1000
       - PGID=1000
     ports:
@@ -70,7 +71,42 @@ services:
     networks:
       - node-red-net
     volumes:
-      - /opt/appdata/node_red/data:/data      
+      - $docker_dir/appdata/node_red/data:/data      
+
+
+#---------- influxdb ----------#
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    networks:
+      - default
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    volumes:
+      - $docker_dir/appdata/influxdb2/config:/etc/influxdb2
+      - $docker_dir/appdata/influxdb2/db:/var/lib/influxdb2
+
+
+#---------- grafana ----------#
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    networks:
+      - default
+    ports:
+      - "3000:3000"
+    user: "1000"
+    volumes:
+      - $docker_dir/appdata/grafana:/var/lib/grafana
+    environment:
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource,grafana-worldmap-panel,grafana-piechart-panel"
+
 
 networks:
     mosquitto:

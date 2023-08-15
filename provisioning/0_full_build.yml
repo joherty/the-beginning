@@ -10,8 +10,6 @@
       - vars.yml
       - credentials.yml
       - ssh_keys.yml
-    vars:
-      docker_compose_version: "v2.20.2"
     tasks:
 
 
@@ -43,6 +41,19 @@
 
 
 #---------- Install Docker ----------#
+
+    - name: create directory /home/john/containers
+      file:
+        path: "{{ docker_dir }}"
+        state: directory
+
+    - name: copy docker .env to the server(s)
+      ansible.builtin.copy:
+        src: /home/john/code/the-beginning/provisioning/config_files/.env
+        dest: "{{ docker_dir }}/.env"
+        owner: john
+        group: john
+        mode: u=rw,g=r,o=r
 
     - name: Install aptitude
       apt:
@@ -110,23 +121,23 @@
     - name: copy docker-compose.yml to the server(s)
       ansible.builtin.copy:
         src: /home/john/code/the-beginning/provisioning/config_files/docker-compose.yml
-        dest: /opt/docker-compose.yml
+        dest: "{{ docker_dir }}/docker-compose.yml"
         owner: john
         group: john
         mode: u=rw,g=r,o=r
 
 #---------- Configure mosquitto ----------#
 
-    - name: create directory /opt/appdata/mosquitto/config
+    - name: create directory /appdata/mosquitto/config
       file:
-        path: /opt/appdata/mosquitto/config
+        path: "{{ docker_dir }}/appdata/mosquitto/config"
         state: directory
 
 
     - name: copy mosquitto.conf to the server(s)
       ansible.builtin.copy:
         src: /home/john/code/the-beginning/provisioning/config_files/mosquitto.conf
-        dest: /opt/appdata/mosquitto/config/mosquitto.conf
+        dest: "{{ docker_dir }}/appdata/mosquitto/config/mosquitto.conf"
         owner: john
         group: john
         mode: u=rw,g=r,o=r
@@ -134,21 +145,21 @@
     - name: copy mosquitto.passwd to the server(s)
       ansible.builtin.copy:
         src: /home/john/code/the-beginning/provisioning/config_files/mosquitto.passwd
-        dest: /opt/appdata/mosquitto/config/mosquitto.passwd
+        dest: "{{ docker_dir }}/appdata/mosquitto/config/mosquitto.passwd"
         owner: john
         group: john
         mode: u=rw,g=r,o=r             
 
 #---------- Run docker-compose.yml ----------#
 
-    - name: move to /opt and run docker-compose.yml
-      ansible.builtin.shell: cd /opt && docker-compose -f docker-compose.yml up -d --remove-orphans
+    - name: move to {{ docker_dir }} and run docker-compose.yml
+      ansible.builtin.shell: cd {{ docker_dir }} && docker-compose -f docker-compose.yml up -d --remove-orphans
 
 #---------- Configure node-red ----------#
 
     - name: Set node-red folder ownership to john
       ansible.builtin.file:
-        path: /opt/appdata/node_red
+        path: "{{ docker_dir }}/appdata/node_red"
         state: directory
         recurse: yes
         owner: john
