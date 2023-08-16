@@ -51,8 +51,8 @@
       ansible.builtin.copy:
         src: /home/john/code/the-beginning/provisioning/config_files/.env
         dest: "{{ docker_dir }}/.env"
-        owner: john
-        group: john
+        owner: "{{ user }}"
+        group: "{{ user }}"
         mode: u=rw,g=r,o=r
 
     - name: Install aptitude
@@ -96,7 +96,7 @@
 
     - name: Add user to docker group
       user:
-        name: john
+        name: "{{ user }}"
         group: docker
 
 
@@ -122,8 +122,8 @@
       ansible.builtin.copy:
         src: /home/john/code/the-beginning/provisioning/config_files/docker-compose.yml
         dest: "{{ docker_dir }}/docker-compose.yml"
-        owner: john
-        group: john
+        owner: "{{ user }}"
+        group: "{{ user }}"
         mode: u=rw,g=r,o=r
 
 #---------- Configure mosquitto ----------#
@@ -138,16 +138,16 @@
       ansible.builtin.copy:
         src: /home/john/code/the-beginning/provisioning/config_files/mosquitto.conf
         dest: "{{ docker_dir }}/appdata/mosquitto/config/mosquitto.conf"
-        owner: john
-        group: john
+        owner: "{{ user }}"
+        group: "{{ user }}"
         mode: u=rw,g=r,o=r
 
     - name: copy mosquitto.passwd to the server(s)
       ansible.builtin.copy:
         src: /home/john/code/the-beginning/provisioning/config_files/mosquitto.passwd
         dest: "{{ docker_dir }}/appdata/mosquitto/config/mosquitto.passwd"
-        owner: john
-        group: john
+        owner: "{{ user }}"
+        group: "{{ user }}"
         mode: u=rw,g=r,o=r
 
 #---------- Configure grafana directory permissions----------#
@@ -156,8 +156,8 @@
       file:
         path: "{{ docker_dir }}/appdata/grafana"
         state: directory
-        owner: john
-        group: john
+        owner: "{{ user }}"
+        group: "{{ user }}"
         mode: u=rw,g=r,o=r
 
 #---------- Run docker-compose.yml ----------#
@@ -172,8 +172,8 @@
         path: "{{ docker_dir }}/appdata/node_red"
         state: directory
         recurse: yes
-        owner: john
-        group: john
+        owner: "{{ user }}"
+        group: "{{ user }}"
 
     - name: start the node-red container
       ansible.builtin.shell: docker start node-red
