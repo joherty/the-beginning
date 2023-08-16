@@ -2,13 +2,22 @@
 - hosts: 10.0.0.21
   become: true
   tasks:
+
+    - name: copy docker .env to the server(s)
+      ansible.builtin.copy:
+        src: /home/john/code/the-beginning/provisioning/config_files/.env
+        dest: "/home/john/containers/.env"
+        owner: "john"
+        group: "john"
+        mode: u=rw,g=r,o=r
+  
     - name: copy docker-compose.yml to the server(s)
       ansible.builtin.copy:
         src: /home/john/code/the-beginning/provisioning/config_files/docker-compose.yml
-        dest: /opt/docker-compose.yml
-        owner: john
-        group: john
+        dest: "/home/john/containers//docker-compose.yml"
+        owner: "john"
+        group: "john"
         mode: u=rw,g=r,o=r
 
     - name: move to /opt and run docker-compose.yml
-      ansible.builtin.shell: cd /opt && docker-compose -f docker-compose.yml up -d --remove-orphans
+      ansible.builtin.shell: cd /home/john/containers && docker-compose -f docker-compose.yml up -d --remove-orphans

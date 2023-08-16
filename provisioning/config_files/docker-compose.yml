@@ -1,5 +1,41 @@
 version: "3.9"
 services:
+
+#################### traefik
+  traefik:
+    image: "traefik:v2.6"
+    container_name: traefik
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+#################### whoami
+  whoami:
+    image: "traefik/whoami"
+    container_name: whoami
+    scale: 1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`10.0.0.21`) && Path(`/whoami`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+
+  whoami2:
+    image: "nginxdemos/hello"
+    container_name: whoami2
+    scale: 1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami2.rule=Host(`10.0.0.21`) && Path(`/whoami2`)"
+      - "traefik.http.routers.whoami2.entrypoints=web"
+
 #################### portainer
   portainer:
     image: portainer/portainer-ce
@@ -27,19 +63,21 @@ services:
       always 
 
 ################### heimdall
-  heimdall:
-    image: ghcr.io/linuxserver/heimdall
-    container_name: heimdall
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Dublin
-    ports:
-      - "443:443"
-    volumes:
-      - $docker_dir/appdata/heimdall:/config
-    restart:
-      always
+  # heimdall:
+  #   image: ghcr.io/linuxserver/heimdall
+  #   container_name: heimdall
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Europe/Dublin
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.heimdall.rule=Host(`0.0.0.0`) && Path(`/heimdall`)"
+  #     - "traefik.http.routers.heimdall.entrypoints=web"
+  #   volumes:
+  #     - $docker_dir/appdata/heimdall:/config
+  #   restart:
+  #     always
 
 #################### mqtt
   mosquitto:
