@@ -152,9 +152,9 @@
 
 #---------- Configure grafana directory permissions----------#
 
-    - name: create directory /appdata/grafana/config
+    - name: create directory /appdata/grafana
       file:
-        path: "{{ docker_dir }}/appdata/grafana/config"
+        path: "{{ docker_dir }}/appdata/grafana"
         state: directory
         owner: john
         group: john
