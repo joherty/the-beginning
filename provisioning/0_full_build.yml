@@ -148,7 +148,17 @@
         dest: "{{ docker_dir }}/appdata/mosquitto/config/mosquitto.passwd"
         owner: john
         group: john
-        mode: u=rw,g=r,o=r             
+        mode: u=rw,g=r,o=r
+
+#---------- Configure grafana directory permissions----------#
+
+    - name: create directory /appdata/grafana/config
+      file:
+        path: "{{ docker_dir }}/appdata/grafana/config"
+        state: directory
+        owner: john
+        group: john
+        mode: u=rw,g=r,o=r
 
 #---------- Run docker-compose.yml ----------#
 
