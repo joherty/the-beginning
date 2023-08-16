@@ -42,7 +42,7 @@
 
 #---------- Install Docker ----------#
 
-    - name: create directory /home/john/containers
+    - name: create containers directory
       file:
         path: "{{ docker_dir }}"
         state: directory
