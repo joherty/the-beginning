@@ -1,6 +1,6 @@
 # In the beginning
 
-This is the complete **Infastructure as Code** reference for the Oak Tree Cottage services.
+This is the complete **Infastructure as Code** reference for my home services.
 
 ### Terraform
 
