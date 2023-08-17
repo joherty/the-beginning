@@ -31,3 +31,5 @@ network:
 https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-linux-x86_64
 
 https://accesto.com/blog/docker-reverse-proxy-using-traefik/
+
+https://www.smarthomebeginner.com/traefik-docker-compose-guide-2022/
