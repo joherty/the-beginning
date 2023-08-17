@@ -1,0 +1,6 @@
+credentials.yml
+ssh_keys.yml
+terraform.tfstate
+terraform.tfstate.backup
+vars.tf
+.env
