@@ -32,4 +32,6 @@ https://github.com/docker/compose/releases/download/v2.20.2/docker-compose-linux
 
 https://accesto.com/blog/docker-reverse-proxy-using-traefik/
 
+https://community.traefik.io/t/lets-encrypt-dns-challenge-via-traefik-docker-compose-problem-only-on-arch/18746
+
 https://www.smarthomebeginner.com/traefik-docker-compose-guide-2022/
