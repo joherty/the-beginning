@@ -8,8 +8,7 @@
     become: true
     vars_files:
       - vars.yml
-      - credentials.yml
-      - ssh_keys.yml
+
     tasks:
 
 
@@ -177,3 +176,12 @@
 
     - name: start the node-red container
       ansible.builtin.shell: docker start node-red
+
+#---------- Configure tailscale ----------#
+    roles:
+    - role: artis3n.tailscale
+      vars:
+        # Example pulling the API key from the env vars on the host running Ansible
+        #tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
+        #tailscale_authkey: "tskey-auth-kTUbGy5CNTRL-kHBBYTPwJLf5B2jFiLQSTfc52Avhf6cw"
+        tailscale_authkey: "{{ TAILSCALE_KEY }}"
