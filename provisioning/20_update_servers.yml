@@ -1,6 +1,6 @@
 ---
 
-- hosts: all
+- hosts: 10.0.0.195
   become: true
   tasks:
 
