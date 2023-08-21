@@ -164,6 +164,20 @@
     - name: move to {{ docker_dir }} and run docker-compose.yml
       ansible.builtin.shell: cd {{ docker_dir }} && docker-compose -f docker-compose.yml up -d --remove-orphans
 
+
+#---------- Configure grafans permissions ----------#
+
+    - name: Set grafana directory permissions
+      ansible.builtin.file:
+        path: "{{ docker_dir }}/appdata/grafana"
+        state: directory
+        recurse: yes
+        owner: "{{ 472 }}"
+        group: "{{ 0 }}"
+
+    - name: start the grafana container
+      ansible.builtin.shell: docker start grafana
+
 #---------- Configure node-red ----------#
 
     - name: Set node-red folder ownership to john

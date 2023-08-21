@@ -151,16 +151,14 @@ services:
 
 #---------- grafana ----------#
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana-enterprise
     container_name: grafana
-    security_opt:
-      - no-new-privileges:true
     restart: unless-stopped
     networks:
       - default
     ports:
       - "3000:3000"
-    user: "1000"
+    user: "0"
     volumes:
       - $docker_dir/appdata/grafana:/var/lib/grafana
     environment:
