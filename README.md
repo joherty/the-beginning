@@ -95,3 +95,10 @@ https://accesto.com/blog/docker-reverse-proxy-using-traefik/
 https://community.traefik.io/t/lets-encrypt-dns-challenge-via-traefik-docker-compose-problem-only-on-arch/18746
 
 https://www.smarthomebeginner.com/traefik-docker-compose-guide-2022/
+
+
+## Backup
+sudo rsync -azv /home/john/containers john@10.0.0.8:/srv/dev-disk-by-uuid-3c6948e6-4fbd-466a-b6b6-1b664272a93b/Data/backups
+
+## Restore
+sudo rsync -azv john@10.0.0.8:/srv/dev-disk-by-uuid-3c6948e6-4fbd-466a-b6b6-1b664272a93b/Data/backups/containers/appdata/ /home/john/containers/appdata/

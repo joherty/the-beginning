@@ -1,0 +1,7 @@
+---
+- name: backup container data
+  hosts: 10.0.0.21
+  become: true
+  tasks:
+    - name: excecute rysnc backup
+      shell: rsync -azv /home/john/containers john@10.0.0.8:/srv/dev-disk-by-uuid-3c6948e6-4fbd-466a-b6b6-1b664272a93b/Data/backups

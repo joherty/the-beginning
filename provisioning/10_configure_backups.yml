@@ -1,0 +1,47 @@
+---
+- hosts: 10.0.0.21
+  become: true
+  tasks:
+    #---------- create directory /scripts----------#
+
+    - name: create directory /scripts
+      file:
+        path: /scripts
+        state: directory
+        owner: root
+        group: root
+        mode: u=rw,g=r,o=r
+
+    - name: copy volume_backup_script.sh to the server(s)
+      ansible.builtin.copy:
+        src: /home/john/code/the-beginning/provisioning/config_files/volume_backup_script.sh
+        dest: /scripts/volume_backup_script.sh
+        owner: root
+        group: root
+        #mode: u=rwx,g=rx,o=r
+        mode: '0775'
+
+    - name: Install cron
+      apt:
+        name: cron
+        state: latest
+        update_cache: true
+
+    - name: Mount Lisa backups CIFS volume
+      ansible.posix.mount:
+        src: //10.0.0.8/srv/dev-disk-by-uuid-3c6948e6-4fbd-466a-b6b6-1b664272a93b/Data/backups"
+        path: /mnt/backups
+        opts: rw,sync,hard
+        boot: true
+        state: mounted
+        fstype: cifs
+
+    - name: "backup docker volumes"
+      ansible.builtin.cron:
+        name: "backup docker volumes"
+        state: "present"
+        user: "root"
+        minute: "*/2"
+        hour: "*"
+        month: "*"
+        job: "/bin/sh /scripts/volume_backup_script.sh >> /tmp/backup.log 2>&1"
