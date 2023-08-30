@@ -1,0 +1,17 @@
+---
+- name: cron test
+  hosts: 10.0.0.21
+  become: true
+  tasks:
+    - name: "example cronjob"
+      ansible.builtin.cron:
+        name: "test cronjob"
+        state: "absent"
+        user: "john"
+        minute: "*/2"
+        hour: "*"
+        month: "*"
+        weekday: "*"
+        job: 'logger "ansible-pilot"'
+
+
