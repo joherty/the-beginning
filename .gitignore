@@ -5,3 +5,4 @@ terraform.tfstate.backup
 vars.tf
 .env
 vars.yml
+notes.md
