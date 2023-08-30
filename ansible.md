@@ -1,3 +1,0 @@
-# Ansible instructions
-
-## Install Ansible

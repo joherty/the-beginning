@@ -1,5 +1,0 @@
----
-- name: restore container data
-  hosts: 10.0.0.21
-  become: true
-  tasks:

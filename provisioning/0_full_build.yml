@@ -39,6 +39,23 @@
         name: qemu-guest-agent
 
 
+#---------- Install rsync ----------#
+
+    - name: install rsync
+      apt:
+        name: rsync
+        state: latest        
+
+
+#---------- Install cron ----------#
+
+    - name: Install cron
+      apt:
+        name: cron
+        state: latest
+        update_cache: true        
+
+
 #---------- Install Docker ----------#
 
     - name: create containers directory
@@ -48,7 +65,7 @@
 
     - name: copy docker .env to the server(s)
       ansible.builtin.copy:
-        src: /home/john/code/the-beginning/provisioning/config_files/.env
+        src: "{{ config_files_source }}/.env"
         dest: "{{ docker_dir }}/.env"
         owner: "{{ user }}"
         group: "{{ user }}"
@@ -119,7 +136,7 @@
 
     - name: copy docker-compose.yml to the server(s)
       ansible.builtin.copy:
-        src: /home/john/code/the-beginning/provisioning/config_files/docker-compose.yml
+        src: "{{ config_files_source }}/docker-compose.yml"
         dest: "{{ docker_dir }}/docker-compose.yml"
         owner: "{{ user }}"
         group: "{{ user }}"
@@ -135,7 +152,7 @@
 
     - name: copy mosquitto.conf to the server(s)
       ansible.builtin.copy:
-        src: /home/john/code/the-beginning/provisioning/config_files/mosquitto.conf
+        src: "{{ config_files_source }}/mosquitto.conf"
         dest: "{{ docker_dir }}/appdata/mosquitto/config/mosquitto.conf"
         owner: "{{ user }}"
         group: "{{ user }}"
@@ -143,7 +160,7 @@
 
     - name: copy mosquitto.passwd to the server(s)
       ansible.builtin.copy:
-        src: /home/john/code/the-beginning/provisioning/config_files/mosquitto.passwd
+        src: "{{ config_files_source }}/mosquitto.passwd"
         dest: "{{ docker_dir }}/appdata/mosquitto/config/mosquitto.passwd"
         owner: "{{ user }}"
         group: "{{ user }}"
@@ -158,6 +175,32 @@
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: u=rw,g=r,o=r
+
+##---------- Mount container_backups----------#
+
+    - name: Mount backups CIFS volume
+      ansible.posix.mount:
+        src: //10.0.0.8/container_backups
+        path: /mnt/container_backups
+        opts: "rw,vers=3,file_mode=0600,dir_mode=0700,username={{ smb_username }},password={{ smb_password }}"
+        boot: true
+        state: mounted
+        fstype: cifs
+
+#---------- Set /mnt/container_backups folder ownership ----------#
+
+    - name: Set node-red folder ownership
+      ansible.builtin.file:
+        path: /mnt/container_backups
+        state: directory
+        recurse: yes
+        owner: "{{ user }}"
+        group: "{{ user }}"
+
+##---------- Restore container_backups----------#
+
+    - name: excecute rysnc restore
+      ansible.builtin.shell: rsync -azv /mnt/container_backups/ /home/john/containers/appdata/
 
 #---------- Run docker-compose.yml ----------#
 
@@ -180,7 +223,7 @@
 
 #---------- Configure node-red ----------#
 
-    - name: Set node-red folder ownership to john
+    - name: Set node-red folder ownership
       ansible.builtin.file:
         path: "{{ docker_dir }}/appdata/node_red"
         state: directory
@@ -195,7 +238,4 @@
     roles:
     - role: artis3n.tailscale
       vars:
-        # Example pulling the API key from the env vars on the host running Ansible
-        #tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
-        #tailscale_authkey: "tskey-auth-kTUbGy5CNTRL-kHBBYTPwJLf5B2jFiLQSTfc52Avhf6cw"
         tailscale_authkey: "{{ TAILSCALE_KEY }}"

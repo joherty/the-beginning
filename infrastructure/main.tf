@@ -8,14 +8,11 @@ terraform {
 }
 
 provider "proxmox" {
-  # url is the hostname (FQDN if you have one) for the proxmox host you'd like to connect to to issue the commands. my proxmox host is 'prox-1u'. Add /api2/json at the end for the API
   pm_api_url = "https://10.0.0.1:8006/api2/json"
-
-  # api token id is in the form of: <username>@pam!<tokenId>
   pm_api_token_id = "terraform@pam!terraform_access"
 
   # this is the full secret wrapped in quotes. don't worry, I've already deleted this from my proxmox cluster by the time you read this post
-  pm_api_token_secret = "5ebc125f-ca44-4857-81ff-52383b59bb2d"
+  pm_api_token_secret = var.pm_api_token_secret
 
   # leave tls_insecure set to true unless you have your proxmox SSL certificate situation fully sorted out (if you do, you will know)
   pm_tls_insecure = true
@@ -33,7 +30,7 @@ resource "proxmox_vm_qemu" "test_server" {
   # another variable with contents "ubuntu-2004-cloudinit-template"
   clone = var.template_name
 
-  # basic VM settings here. agent refers to guest agent
+  # basic VM settings here
   agent = 1
   os_type = "cloud-init"
   cores = 2
@@ -45,7 +42,6 @@ resource "proxmox_vm_qemu" "test_server" {
 
   disk {
     slot = 0
-    # set disk size here. leave it small for testing because expanding the disk takes time.
     size = "32G"
     type = "scsi"
     storage = "hdd-img"
@@ -58,7 +54,7 @@ resource "proxmox_vm_qemu" "test_server" {
     bridge = "vmbr0"
   }
 
-  # not sure exactly what this is for. presumably something about MAC addresses and ignore network changes during the life of the VM
+  # MAC addresses and ignore network changes during the life of the VM
   lifecycle {
     ignore_changes = [
       network,
