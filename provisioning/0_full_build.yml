@@ -239,3 +239,15 @@
     - role: artis3n.tailscale
       vars:
         tailscale_authkey: "{{ TAILSCALE_KEY }}"
+
+#---------- Reinstate backups ----------#
+
+    - name: Creates a cron file under /etc/cron.d
+      ansible.builtin.cron:
+        name: ansible_container_update
+        weekday: "*"
+        minute: "0"
+        hour: "3"
+        user: root
+        job: "rsync -azv /home/john/containers/appdata/ /mnt/container_backups/"
+        cron_file: ansible_container_update

@@ -14,10 +14,10 @@
     - name: copy docker-compose.yml to the server(s)
       ansible.builtin.copy:
         src: /home/john/code/the-beginning/provisioning/config_files/docker-compose.yml
-        dest: "/home/john/containers//docker-compose.yml"
+        dest: "/home/john/containers/docker-compose.yml"
         owner: "john"
         group: "john"
         mode: u=rw,g=r,o=r
 
-    - name: move to /opt and run docker-compose.yml
+    - name: move to /containers and run docker-compose.yml
       ansible.builtin.shell: cd /home/john/containers && docker-compose -f docker-compose.yml up -d --remove-orphans
