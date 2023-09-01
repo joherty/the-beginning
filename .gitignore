@@ -1,0 +1,16 @@
+credentials.yml
+ssh_keys.yml
+terraform.tfstate
+terraform.tfstate.backup
+vars.tf
+.env
+vars.yml
+notes.md
+provisioning/25_mount_drive.yml
+provisioning/vars.yml
+provisioning/inventory
+provisioning/ansible.cfg
+provisioning/mosquitto.passwd
+provisioning/cron_test.yml
+the-beginning/.vs
+.terraform.lock.hcl
