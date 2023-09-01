@@ -1,6 +1,6 @@
 # In the beginning
 
-This is the complete **Infastructure as Code** reference for my home services.
+**Infastructure as Code** reference for some of my home services. More work to do!
 
 ### Infrastructure
 
