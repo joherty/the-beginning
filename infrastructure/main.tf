@@ -8,14 +8,14 @@ terraform {
 }
 
 provider "proxmox" {
-  pm_api_url = "https://10.0.0.1:8006/api2/json"
+  pm_api_url = var.proxmox_url
   pm_api_token_id = "terraform@pam!terraform_access"
   pm_api_token_secret = var.pm_api_token_secret
   pm_tls_insecure = true
 }
 
 resource "proxmox_vm_qemu" "test_server" {
-  count = 1 # just want 1 for now, set to 0 and apply to destroy VM
+  count = 1 # number of vms needed, set to 0 and apply to destroy VMs
   name = "oak-vm-${count.index + 1}" #count.index starts at 0, so + 1 means this VM will be named oak-vm-1 in proxmox
 
   # this now reaches out to the vars file.
@@ -46,7 +46,7 @@ resource "proxmox_vm_qemu" "test_server" {
     bridge = "vmbr0"
   }
 
-  # MAC addresses and ignore network changes during the life of the VM
+  # Random MAC addresses and ignore network changes during the life of the VM
   lifecycle {
     ignore_changes = [
       network,
