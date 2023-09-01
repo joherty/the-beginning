@@ -1,5 +1,5 @@
 ---
-- hosts: 10.0.0.21
+- hosts: all
   become: true
   tasks:
 

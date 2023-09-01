@@ -10,7 +10,9 @@ provisioning/25_mount_drive.yml
 provisioning/vars.yml
 provisioning/inventory
 provisioning/ansible.cfg
-provisioning/mosquitto.passwd
+provisioning/config_files/mosquitto.passwd
+provisioning/config_files/.env
 provisioning/cron_test.yml
+provisioning/config_files/volume_backup_script.sh
 the-beginning/.vs
 .terraform.lock.hcl
