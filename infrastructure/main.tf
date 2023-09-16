@@ -15,8 +15,9 @@ provider "proxmox" {
 }
 
 resource "proxmox_vm_qemu" "test_server" {
-  count = 1 # number of vms needed, set to 0 and apply to destroy VMs
-  name = "oak-vm-${count.index + 1}" #count.index starts at 0, so + 1 means this VM will be named oak-vm-1 in proxmox
+  count = 1
+ # number of vms needed, set to 0 and apply to destroy VMs
+  name = "docker-vm-${count.index + 1}" #count.index starts at 0, so + 1 means this VM will be named oak-vm-1 in proxmox
 
   # this now reaches out to the vars file.
   target_node = var.proxmox_host
@@ -28,7 +29,7 @@ resource "proxmox_vm_qemu" "test_server" {
   cores = 2
   sockets = 1
   cpu = "host"
-  memory = 2048
+  memory = 4096
   scsihw = "virtio-scsi-pci"
   bootdisk = "scsi0"
 

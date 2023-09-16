@@ -92,6 +92,33 @@ services:
       GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource,grafana-worldmap-panel,grafana-piechart-panel"
 
 
+#---------- heimdall ----------#
+  heimdall:
+    image: ghcr.io/linuxserver/heimdall
+    container_name: heimdall
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Dublin
+    ports:
+      - "443:443"
+    volumes:
+      - $docker_dir/appdata/heimdall:/config
+
+#---------- homer ----------#
+  homer:
+    image: b4bz/homer
+    container_name: homer
+    volumes:
+      - $docker_dir/appdata/homer:/www/assets
+    ports:
+      - 8092:8080
+#    environment:
+#      - UID=1000
+#      - GID=1000
+    restart: unless-stopped
+    user: 1000:1000
+
 networks:
     mosquitto:
         name: mosquitto

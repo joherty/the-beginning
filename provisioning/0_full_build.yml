@@ -149,7 +149,6 @@
         path: "{{ docker_dir }}/appdata/mosquitto/config"
         state: directory
 
-
     - name: copy mosquitto.conf to the server(s)
       ansible.builtin.copy:
         src: "{{ config_files_source }}/mosquitto.conf"
@@ -166,49 +165,33 @@
         group: "{{ user }}"
         mode: u=rw,g=r,o=r
 
-#---------- Configure grafana directory permissions----------#
-
-    - name: create directory /appdata/grafana
-      file:
-        path: "{{ docker_dir }}/appdata/grafana"
-        state: directory
-        owner: "{{ user }}"
-        group: "{{ user }}"
-        mode: u=rw,g=r,o=r
-
 ##---------- Mount container_backups----------#
 
     - name: Mount backups CIFS volume
       ansible.posix.mount:
         src: //10.0.0.8/container_backups
         path: /mnt/container_backups
-        opts: "rw,vers=3,file_mode=0600,dir_mode=0700,username={{ smb_username }},password={{ smb_password }}"
+        opts: "rw,vers=3,file_mode=0600,dir_mode=0700,gid=1000,uid=1000,username={{ smb_username }},password={{ smb_password }}"
         boot: true
         state: mounted
         fstype: cifs
-
-#---------- Set /mnt/container_backups folder ownership ----------#
-
-    - name: Set node-red folder ownership
-      ansible.builtin.file:
-        path: /mnt/container_backups
-        state: directory
-        recurse: yes
-        owner: "{{ user }}"
-        group: "{{ user }}"
 
 ##---------- Restore container_backups----------#
 
     - name: excecute rysnc restore
       ansible.builtin.shell: rsync -azv /mnt/container_backups/ /home/john/containers/appdata/
 
-#---------- Run docker-compose.yml ----------#
+#---------- Configure appdata permissions ----------#
 
-    - name: move to {{ docker_dir }} and run docker-compose.yml
-      ansible.builtin.shell: cd {{ docker_dir }} && docker-compose -f docker-compose.yml up -d --remove-orphans
+    - name: Set appdata ownership
+      ansible.builtin.file:
+        path: "{{ docker_dir }}/appdata"
+        state: directory
+        recurse: yes
+        owner: "{{ user }}"
+        group: "{{ user }}"      
 
-
-#---------- Configure grafans permissions ----------#
+#---------- Configure grafana permissions ----------#
 
     - name: Set grafana directory permissions
       ansible.builtin.file:
@@ -218,12 +201,12 @@
         owner: "{{ 472 }}"
         group: "{{ 0 }}"
 
-    - name: start the grafana container
-      ansible.builtin.shell: docker start grafana
+#    - name: start the grafana container
+#      ansible.builtin.shell: docker start grafana
 
 #---------- Configure node-red ----------#
 
-    - name: Set node-red folder ownership
+    - name: Set node-red folder permissions
       ansible.builtin.file:
         path: "{{ docker_dir }}/appdata/node_red"
         state: directory
@@ -231,23 +214,27 @@
         owner: "{{ user }}"
         group: "{{ user }}"
 
-    - name: start the node-red container
-      ansible.builtin.shell: docker start node-red
+#    - name: start the node-red container
+#      ansible.builtin.shell: docker start node-red        
+
+#---------- Run docker-compose.yml ----------#
+
+    - name: move to {{ docker_dir }} and run docker-compose.yml
+      ansible.builtin.shell: cd {{ docker_dir }} && docker-compose -f docker-compose.yml up -d --remove-orphans
+
+#---------- Add backup cron job ----------#
+
+    - name: Creates a cron file under /etc/cron.d
+      ansible.builtin.cron:
+        name: ansible_container_update
+        minute: "0"
+        hour: "3"
+        user: root
+        job: "rsync -azv /home/john/containers/appdata/ /mnt/container_backups/"
+        cron_file: ansible_container_update      
 
 #---------- Configure tailscale ----------#
     roles:
     - role: artis3n.tailscale
       vars:
         tailscale_authkey: "{{ TAILSCALE_KEY }}"
-
-#---------- Reinstate backups ----------#
-
-    - name: Creates a cron file under /etc/cron.d
-      ansible.builtin.cron:
-        name: ansible_container_update
-        weekday: "*"
-        minute: "0"
-        hour: "3"
-        user: root
-        job: "rsync -azv /home/john/containers/appdata/ /mnt/container_backups/"
-        cron_file: ansible_container_update

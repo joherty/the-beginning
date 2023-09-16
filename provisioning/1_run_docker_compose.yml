@@ -1,15 +1,7 @@
 ---
-- hosts: all
+- hosts: 10.0.0.21
   become: true
   tasks:
-
-    - name: copy docker .env to the server(s)
-      ansible.builtin.copy:
-        src: /home/john/code/the-beginning/provisioning/config_files/.env
-        dest: "/home/john/containers/.env"
-        owner: "john"
-        group: "john"
-        mode: u=rw,g=r,o=r
   
     - name: copy docker-compose.yml to the server(s)
       ansible.builtin.copy:
