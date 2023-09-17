@@ -119,6 +119,14 @@ services:
     restart: unless-stopped
     user: 1000:1000
 
+#---------- excalidraw ----------#
+  excalidraw:
+    image: excalidraw/excalidraw:latest
+    restart: always
+    ports:
+      - 8084:80
+    container_name: excalidraw    
+
 networks:
     mosquitto:
         name: mosquitto
