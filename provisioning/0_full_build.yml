@@ -61,6 +61,22 @@
         state: latest
         update_cache: true        
 
+#---------- Install nano ----------#
+
+    - name: Install nano
+      apt:
+        name: nano
+        state: latest
+        update_cache: true          
+
+#---------- Install vim ----------#
+
+    - name: Install vim
+      apt:
+        name: vim
+        state: latest
+        update_cache: true          
+
 
 #---------- Install Docker ----------#
 
@@ -207,9 +223,6 @@
         owner: "{{ 472 }}"
         group: "{{ 0 }}"
 
-#    - name: start the grafana container
-#      ansible.builtin.shell: docker start grafana
-
 #---------- Configure node-red ----------#
 
     - name: Set node-red folder permissions
@@ -218,10 +231,16 @@
         state: directory
         recurse: yes
         owner: "{{ user }}"
-        group: "{{ user }}"
+        group: "{{ user }}"   
 
-#    - name: start the node-red container
-#      ansible.builtin.shell: docker start node-red        
+#---------- Configure telegraf ----------#
+
+    - name: Set telegraf config file permissions
+      ansible.builtin.file:
+        path: "{{ docker_dir }}/appdata/telegraf/telegraf.conf"
+        owner: "{{ user }}"
+        group: "{{ user }}"   
+        mode: 0775
 
 #---------- Run docker-compose.yml ----------#
 
@@ -233,8 +252,9 @@
     - name: Creates a cron file under /etc/cron.d
       ansible.builtin.cron:
         name: ansible_container_update
-        minute: "0"
-        hour: "3"
+        special_time: "hourly"
+#        minute: "0"
+#        hour: "3"
         user: root
         job: "rsync -azv /home/john/containers/appdata/ /mnt/container_backups/"
         cron_file: ansible_container_update      
